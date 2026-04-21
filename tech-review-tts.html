@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>مشغّل المراجعات التقنية 🎙️</title>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #07080f;
+    --surface: #0e1018;
+    --card: #12151f;
+    --border: #1c2030;
+    --accent: #00e5ff;
+    --accent2: #ff3d6b;
+    --accent3: #ffe234;
+    --text: #eaecf8;
+    --muted: #525878;
+    --glow: rgba(0,229,255,0.15);
+  }
+
+  * { margin:0; padding:0; box-sizing:border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  body::before {
+    content:'';
+    position:fixed; inset:0;
+    background:
+      radial-gradient(ellipse 60% 40% at 10% 15%, rgba(0,229,255,0.06) 0%, transparent 60%),
+      radial-gradient(ellipse 50% 40% at 90% 80%, rgba(255,61,107,0.05) 0%, transparent 60%);
+    pointer-events:none; z-index:0;
+  }
+
+  body::after {
+    content:'';
+    position:fixed; inset:0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.025) 1px, transparent 1px);
+    background-size: 44px 44px;
+    pointer-events:none; z-index:0;
+  }
+
+  .container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 32px 16px 80px;
+    position: relative;
+    z-index: 2;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    text-align: center;
+    margin-bottom: 32px;
+    animation: fadeDown 0.6s ease both;
+  }
+
+  .brand-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,229,255,0.07);
+    border: 1px solid rgba(0,229,255,0.18);
+    border-radius: 30px;
+    padding: 5px 16px;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .brand-tag .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 8px var(--accent);
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+  .header h1 {
+    font-family: 'Cairo', sans-serif;
+    font-size: clamp(24px, 5vw, 38px);
+    font-weight: 900;
+    background: linear-gradient(135deg, #fff 40%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+  }
+
+  .header p { color: var(--muted); font-size: 13px; font-weight: 300; }
+
+  /* ===== CARD BASE ===== */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+    margin-bottom: 16px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.7s ease both;
+  }
+
+  .card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0;
+    height:2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0.4;
+  }
+
+  .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-label::after { content:''; flex:1; height:1px; background:var(--border); }
+
+  /* ===== PRODUCT INPUT ===== */
+  .input-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 14px;
+  }
+
+  .input-group { display: flex; flex-direction: column; gap: 6px; }
+  .input-group label { font-size: 11px; color: var(--muted); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; }
+
+  input[type=text], textarea {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'Tajawal', sans-serif;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.3s;
+    width: 100%;
+  }
+
+  input[type=text]:focus, textarea:focus { border-color: var(--accent); }
+  input[type=text]::placeholder, textarea::placeholder { color: var(--muted); opacity:0.5; }
+
+  /* ===== SCENES EDITOR ===== */
+  .scenes-editor { display: flex; flex-direction: column; gap: 10px; }
+
+  .scene-row {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
+    align-items: start;
+    transition: border-color 0.3s;
+  }
+
+  .scene-row:focus-within { border-color: rgba(0,229,255,0.3); }
+
+  .scene-row-num {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.15);
+    display: flex; align-items:center; justify-content:center;
+    font-size: 12px; font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .scene-row-fields { display: flex; flex-direction: column; gap: 6px; }
+
+  .scene-row-fields input {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 8px;
+  }
+
+  .scene-row-fields textarea {
+    font-size: 13px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 70px;
+    line-height: 1.7;
+    direction: auto;
+  }
+
+  .scene-row-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    flex-shrink: 0;
+  }
+
+  .icon-btn {
+    width: 32px; height: 32px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--card);
+    color: var(--muted);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex; align-items:center; justify-content:center;
+    transition: all 0.2s;
+  }
+
+  .icon-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .icon-btn.add:hover { border-color: var(--accent); color: var(--accent); }
+
+  .add-scene-btn {
+    width: 100%;
+    padding: 11px;
+    background: rgba(0,229,255,0.05);
+    border: 1px dashed rgba(0,229,255,0.2);
+    border-radius: 12px;
+    color: var(--accent);
+    font-family: 'Cairo', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 4px;
+  }
+
+  .add-scene-btn:hover { background: rgba(0,229,255,0.1); border-color: var(--accent); }
+
+  /* ===== GENERATE BTN ===== */
+  .generate-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent), #0099bb);
+    border: none;
+    border-radius: 16px;
+    color: #000;
+    font-family: 'Cairo', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 24px rgba(0,229,255,0.25);
+    letter-spacing: 0.5px;
+  }
+
+  .generate-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(0,229,255,0.35); }
+  .generate-btn:active { transform: translateY(0); }
+
+  /* ===== PLAYER ===== */
+  .player-wrap { display: none; }
+  .player-wrap.visible { display: block; }
+
+  /* Product title bar */
+  .product-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    margin-bottom: 14px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  .product-icon {
+    width: 46px; height: 46px;
+    border-radius: 13px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items:center; justify-content:center;
+    font-size: 22px;
+    flex-shrink: 0;
+    box-shadow: 0 4px 16px rgba(0,229,255,0.2);
+  }
+
+  .product-info .product-name {
+    font-family: 'Cairo', sans-serif;
+    font-size: 17px;
+    font-weight: 800;
+  }
+
+  .product-info .product-sub {
+    font-size: 12px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .edit-btn {
+    margin-right: auto;
+    padding: 7px 14px;
+    background: rgba(0,229,255,0.07);
+    border: 1px solid rgba(0,229,255,0.18);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .edit-btn:hover { background: rgba(0,229,255,0.15); }
+
+  /* Scenes list */
+  .scenes-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px; }
+
+  .scene-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.25s;
+    position: relative;
+  }
+
+  .scene-card::before {
+    content:'';
+    position:absolute; top:0; left:0; right:0;
+    height:2px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity:0; transition: opacity 0.3s;
+  }
+
+  .scene-card:hover { border-color: rgba(0,229,255,0.25); transform: translateX(-3px); }
+  .scene-card:hover::before { opacity:1; }
+  .scene-card.playing { border-color: var(--accent2); box-shadow: 0 0 18px rgba(255,61,107,0.12); }
+  .scene-card.playing::before { background: linear-gradient(90deg, transparent, var(--accent2), transparent); opacity:1; }
+
+  .scene-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 18px;
+  }
+
+  .scene-num {
+    width: 30px; height: 30px;
+    border-radius: 8px;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.18);
+    display: flex; align-items:center; justify-content:center;
+    font-size: 12px; font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    transition: all 0.3s;
+  }
+
+  .scene-card.playing .scene-num {
+    background: rgba(255,61,107,0.12);
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+
+  .scene-meta { flex:1; min-width:0; }
+
+  .scene-lbl {
+    font-size: 10px; font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 2px;
+  }
+
+  .scene-ttl {
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .scene-play {
+    width: 34px; height: 34px;
+    border-radius: 50%;
+    background: rgba(0,229,255,0.08);
+    border: 1px solid rgba(0,229,255,0.2);
+    display: flex; align-items:center; justify-content:center;
+    font-size: 13px; color: var(--accent);
+    cursor: pointer;
+    transition: all 0.25s;
+    flex-shrink: 0;
+  }
+
+  .scene-play:hover { background: rgba(0,229,255,0.18); transform: scale(1.1); }
+
+  .scene-card.playing .scene-play {
+    background: rgba(255,61,107,0.12);
+    border-color: var(--accent2);
+    color: var(--accent2);
+    animation: softPulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes softPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
+
+  .scene-body {
+    padding: 0 18px 16px;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #b0b8d8;
+    font-weight: 300;
+    border-top: 1px solid var(--border);
+    padding-top: 12px;
+    display: none;
+    direction: auto;
+  }
+
+  .scene-card.active .scene-body,
+  .scene-card.playing .scene-body { display: block; }
+
+  /* Now playing */
+  .now-playing {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px 16px;
+    margin-bottom: 16px;
+    min-height: 68px;
+  }
+
+  .np-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    display: flex; align-items:center; justify-content:center;
+    font-size: 20px; flex-shrink: 0;
+    box-shadow: 0 3px 16px rgba(0,229,255,0.18);
+  }
+
+  .np-info { flex:1; min-width:0; }
+  .np-title {
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px; font-weight: 700;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    margin-bottom: 3px;
+  }
+
+  .np-status { font-size: 11px; color: var(--muted); }
+  .np-status.active { color: var(--accent); }
+  .np-status.loading { color: var(--accent3); }
+  .np-status.error { color: var(--accent2); }
+
+  /* Waveform */
+  .waveform { display: flex; align-items: center; gap: 3px; height: 30px; }
+  .wave-bar { width: 3px; border-radius: 3px; background: var(--accent); height: 4px; flex-shrink: 0; }
+  .waveform.playing .wave-bar { animation: waveAnim 0.55s ease-in-out infinite; }
+  @keyframes waveAnim { 0%,100%{height:4px} 50%{height:var(--wh,14px)} }
+
+  /* Progress */
+  .progress-track { height: 3px; background: var(--border); border-radius: 4px; overflow: hidden; margin-bottom: 6px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 4px; width: 0%; transition: width 0.3s; }
+  .progress-fill.loading { animation: loadBar 1.5s linear infinite; width: 30% !important; }
+  @keyframes loadBar { 0%{transform:translateX(-150%)} 100%{transform:translateX(500%)} }
+  .progress-labels { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); direction: ltr; margin-bottom: 16px; }
+
+  /* Controls */
+  .controls {
+    display: grid;
+    grid-template-columns: 1fr auto auto auto 1fr;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .ctrl-btn {
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    font-size: 15px;
+    cursor: pointer;
+    display: flex; align-items:center; justify-content:center;
+    transition: all 0.25s;
+  }
+
+  .ctrl-btn:hover:not(:disabled) { border-color: var(--accent); color: var(--accent); background: rgba(0,229,255,0.07); }
+  .ctrl-btn:disabled { opacity:0.3; cursor:not-allowed; }
+
+  .ctrl-btn.main {
+    width: 58px; height: 58px; font-size: 19px;
+    background: linear-gradient(135deg, var(--accent2), #ff7090);
+    border: none; color: #fff;
+    box-shadow: 0 4px 20px rgba(255,61,107,0.35);
+    justify-self: center;
+  }
+
+  .ctrl-btn.main:hover:not(:disabled) { transform: scale(1.08); box-shadow: 0 6px 28px rgba(255,61,107,0.45); color:#fff; border:none; }
+
+  /* Play all */
+  .play-all-btn {
+    width: 100%;
+    padding: 15px;
+    background: linear-gradient(135deg, var(--accent), #0099bb);
+    border: none; border-radius: 14px;
+    color: #000;
+    font-family: 'Cairo', sans-serif;
+    font-size: 16px; font-weight: 800;
+    cursor: pointer;
+    display: flex; align-items:center; justify-content:center; gap: 8px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 20px rgba(0,229,255,0.25);
+    margin-bottom: 14px;
+  }
+
+  .play-all-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(0,229,255,0.35); }
+  .play-all-btn:disabled { opacity:0.4; cursor:not-allowed; transform:none; }
+
+  /* Speed */
+  .speed-row {
+    display: flex; align-items: center; gap: 12px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .speed-row label { font-size: 10px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; white-space: nowrap; }
+
+  input[type=range] {
+    flex:1; -webkit-appearance:none;
+    height: 3px; border-radius: 3px;
+    background: var(--border); outline: none; cursor: pointer;
+  }
+
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance:none;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: var(--accent); cursor: pointer;
+    box-shadow: 0 0 8px rgba(0,229,255,0.4);
+  }
+
+  .speed-val {
+    font-size: 11px; font-weight: 700;
+    color: var(--accent);
+    min-width: 36px; text-align: center;
+    background: rgba(0,229,255,0.07);
+    padding: 3px 8px; border-radius: 6px;
+  }
+
+  /* Voice row */
+  .voice-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+    margin-top: 12px;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .voice-info { display: flex; align-items: center; gap: 10px; }
+  .voice-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+  .voice-name { font-size: 12px; font-weight: 600; color: var(--text); }
+  .voice-sub { font-size: 11px; color: var(--muted); }
+
+  .preview-btn {
+    padding: 8px 16px;
+    background: rgba(0,229,255,0.07);
+    border: 1px solid rgba(0,229,255,0.2);
+    border-radius: 8px;
+    color: var(--accent);
+    font-family: 'Cairo', sans-serif;
+    font-size: 12px; font-weight: 700;
+    cursor: pointer;
+    transition: all 0.25s;
+    white-space: nowrap;
+  }
+
+  .preview-btn:hover { background: rgba(0,229,255,0.15); }
+  .preview-btn:disabled { opacity:0.4; cursor:not-allowed; }
+
+  @keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+  @keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+
+  @media(max-width:500px) {
+    .input-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="brand-tag"><div class="dot"></div>TECH REVIEW STUDIO</div>
+    <h1>مشغّل المراجعات التقنية</h1>
+    <p>أدخل اسكريبت مراجعتك واستمع إليه بصوت مصري حقيقي 🎙️</p>
+  </div>
+
+  <!-- Editor -->
+  <div id="editorWrap">
+
+    <!-- Product Info -->
+    <div class="card" style="animation-delay:0.05s">
+      <div class="card-label">📱 معلومات المنتج</div>
+      <div class="input-grid">
+        <div class="input-group">
+          <label>اسم المنتج</label>
+          <input type="text" id="productName" placeholder="مثال: Samsung Galaxy S25">
+        </div>
+        <div class="input-group">
+          <label>الإيموجي 🎯</label>
+          <input type="text" id="productEmoji" placeholder="📱" maxlength="2" style="text-align:center;font-size:22px;">
+        </div>
+      </div>
+    </div>
+
+    <!-- Scenes -->
+    <div class="card" style="animation-delay:0.1s">
+      <div class="card-label">🎬 مشاهد السكريبت</div>
+      <div class="scenes-editor" id="scenesEditor"></div>
+      <button class="add-scene-btn" onclick="addScene()">＋ أضف مشهد جديد</button>
+    </div>
+
+    <!-- Generate -->
+    <button class="generate-btn" onclick="generatePlayer()">
+      🚀 &nbsp; توليد المشغّل
+    </button>
+
+  </div>
+
+  <!-- Player -->
+  <div class="player-wrap" id="playerWrap">
+
+    <!-- Product bar -->
+    <div class="product-bar">
+      <div class="product-icon" id="productIconEl">📱</div>
+      <div class="product-info">
+        <div class="product-name" id="productNameEl">—</div>
+        <div class="product-sub">مراجعة تقنية — بصوت مصري</div>
+      </div>
+      <button class="edit-btn" onclick="backToEditor()">✏️ تعديل</button>
+    </div>
+
+    <!-- Scenes list -->
+    <div class="scenes-list" id="scenesList"></div>
+
+    <!-- Player controls -->
+    <div class="card" style="animation-delay:0s; margin-bottom:0;">
+      <div class="now-playing">
+        <div class="np-icon" id="npIcon">🎬</div>
+        <div class="np-info">
+          <div class="np-title" id="npTitle">اختر مشهداً أو شغّل الكل</div>
+          <div class="np-status" id="npStatus">في الانتظار...</div>
+        </div>
+        <div class="waveform" id="waveform"></div>
+      </div>
+
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill"></div>
+      </div>
+      <div class="progress-labels">
+        <span id="pLabel">00:00</span>
+        <span id="sceneLabel">—</span>
+      </div>
+
+      <div class="controls">
+        <div></div>
+        <button class="ctrl-btn" id="prevBtn" onclick="prevScene()" disabled>⏮</button>
+        <button class="ctrl-btn main" id="mainBtn" onclick="togglePlay()">▶</button>
+        <button class="ctrl-btn" id="nextBtn" onclick="nextScene()" disabled>⏭</button>
+        <div></div>
+      </div>
+
+      <button class="play-all-btn" id="playAllBtn" onclick="playAll()">
+        ▶▶ &nbsp; تشغيل المراجعة كاملة
+      </button>
+
+      <div class="speed-row">
+        <label>⚡ السرعة</label>
+        <input type="range" id="speedR" min="0.5" max="2" step="0.1" value="1">
+        <span class="speed-val" id="speedV">1.0×</span>
+      </div>
+
+      <div class="voice-row">
+        <div class="voice-info">
+          <div class="voice-dot"></div>
+          <div>
+            <div class="voice-name">Bold Spectacled Bear</div>
+            <div class="voice-sub">صوت مصري ذكر — ElevenLabs</div>
+          </div>
+        </div>
+        <button class="preview-btn" id="previewBtn" onclick="previewVoice()">▶ تجربة الصوت</button>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+const ELEVEN_KEY   = "sk_7334c2a61839b324d8eed24e06c30ff045293ac9a5defa50";
+const ELEVEN_VOICE = "ihycSANIrpHfhWoaq1g3";
+const ELEVEN_MODEL = "eleven_multilingual_v2";
+
+// ===== DEFAULT SCENES =====
+let scenesData = [
+  { label:'مشهد الافتتاح', title:'ده هو المستقبل', text:'' },
+  { label:'التصميم',        title:'',               text:'' },
+  { label:'الشاشة',         title:'',               text:'' },
+  { label:'الأداء',         title:'',               text:'' },
+  { label:'الكاميرا',       title:'',               text:'' },
+  { label:'الخلاصة',        title:'',               text:'' },
+];
+
+// ===== BUILD EDITOR =====
+function buildEditor() {
+  const container = document.getElementById('scenesEditor');
+  container.innerHTML = '';
+  scenesData.forEach((s, i) => {
+    const row = document.createElement('div');
+    row.className = 'scene-row';
+    row.id = `erow-${i}`;
+    row.innerHTML = `
+      <div class="scene-row-num">${i+1}</div>
+      <div class="scene-row-fields">
+        <input type="text" placeholder="اسم المشهد (مثال: التصميم)" value="${s.label}" oninput="scenesData[${i}].label=this.value">
+        <input type="text" placeholder="العنوان (مثال: الأنحف في الفئة)" value="${s.title}" oninput="scenesData[${i}].title=this.value">
+        <textarea placeholder="نص المشهد..." oninput="scenesData[${i}].text=this.value">${s.text}</textarea>
+      </div>
+      <div class="scene-row-actions">
+        <button class="icon-btn" onclick="removeScene(${i})" title="حذف">🗑</button>
+        ${i > 0 ? `<button class="icon-btn" onclick="moveScene(${i},-1)" title="أعلى">↑</button>` : ''}
+        ${i < scenesData.length-1 ? `<button class="icon-btn" onclick="moveScene(${i},1)" title="أسفل">↓</button>` : ''}
+      </div>
+    `;
+    container.appendChild(row);
+  });
+}
+
+function addScene() {
+  scenesData.push({ label:'مشهد جديد', title:'', text:'' });
+  buildEditor();
+}
+
+function removeScene(i) {
+  if (scenesData.length <= 1) return;
+  scenesData.splice(i, 1);
+  buildEditor();
+}
+
+function moveScene(i, dir) {
+  const j = i + dir;
+  if (j < 0 || j >= scenesData.length) return;
+  [scenesData[i], scenesData[j]] = [scenesData[j], scenesData[i]];
+  buildEditor();
+}
+
+buildEditor();
+
+// ===== GENERATE PLAYER =====
+let playerScenes = [];
+let currentScene = -1;
+let isPlayAll = false;
+let isPlaying = false;
+let isPaused = false;
+let currentAudio = null;
+let timerInterval = null;
+let startTime = null;
+
+function generatePlayer() {
+  // Sync textarea values
+  scenesData.forEach((s, i) => {
+    const row = document.getElementById(`erow-${i}`);
+    if (row) {
+      s.label = row.querySelectorAll('input')[0].value || s.label;
+      s.title = row.querySelectorAll('input')[1].value || s.title;
+      s.text  = row.querySelector('textarea').value || s.text;
+    }
+  });
+
+  const name  = document.getElementById('productName').value.trim() || 'المنتج';
+  const emoji = document.getElementById('productEmoji').value.trim() || '📱';
+
+  playerScenes = scenesData.filter(s => s.text.trim() !== '');
+  if (playerScenes.length === 0) {
+    alert('من فضلك أدخل نص لمشهد واحد على الأقل!');
+    return;
+  }
+
+  // Set product info
+  document.getElementById('productIconEl').textContent = emoji;
+  document.getElementById('productNameEl').textContent = name;
+
+  // Build scenes list
+  buildScenesList();
+
+  // Build waveform
+  const wf = document.getElementById('waveform');
+  wf.innerHTML = '';
+  [8,14,22,18,28,20,32,24,18,26,14,30,22,16,24].forEach((h,i) => {
+    const b = document.createElement('div');
+    b.className = 'wave-bar';
+    b.style.cssText = `--wh:${h}px; animation-delay:${i*0.06}s;`;
+    wf.appendChild(b);
+  });
+
+  // Show player
+  document.getElementById('editorWrap').style.display = 'none';
+  document.getElementById('playerWrap').classList.add('visible');
+
+  // Reset state
+  currentScene = -1; isPlayAll = false; isPlaying = false; isPaused = false;
+  currentAudio = null;
+}
+
+function buildScenesList() {
+  const list = document.getElementById('scenesList');
+  list.innerHTML = '';
+  playerScenes.forEach((s, i) => {
+    const card = document.createElement('div');
+    card.className = 'scene-card';
+    card.id = `pscene-${i}`;
+    card.innerHTML = `
+      <div class="scene-header" onclick="toggleExpand(${i})">
+        <div class="scene-num">${i+1}</div>
+        <div class="scene-meta">
+          <div class="scene-lbl">${s.label}</div>
+          <div class="scene-ttl">${s.title || s.label}</div>
+        </div>
+        <div class="scene-play" onclick="event.stopPropagation(); playSingle(${i})">▶</div>
+      </div>
+      <div class="scene-body">${s.text}</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function backToEditor() {
+  if (isPlaying || isPaused) { if(currentAudio) currentAudio.pause(); isPlaying=false; isPaused=false; setWave(false); stopTimer(); }
+  document.getElementById('editorWrap').style.display = 'block';
+  document.getElementById('playerWrap').classList.remove('visible');
+}
+
+// ===== SPEED =====
+document.getElementById('speedR').addEventListener('input', function() {
+  document.getElementById('speedV').textContent = parseFloat(this.value).toFixed(1) + '×';
+});
+
+// ===== PREVIEW =====
+async function previewVoice() {
+  const btn = document.getElementById('previewBtn');
+  btn.disabled = true; btn.textContent = '⏳';
+  const name = document.getElementById('productNameEl').textContent || 'هذا المنتج';
+  await elevenSpeak(`أهلاً! أنا هشرحلك مراجعة ${name} دلوقتي.`, () => {
+    btn.disabled = false; btn.textContent = '▶ تجربة الصوت';
+  });
+}
+
+// ===== ELEVENLABS TTS =====
+async function elevenSpeak(text, onEnd) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  const speed = parseFloat(document.getElementById('speedR').value);
+
+  try {
+    const res = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}`, {
+      method: 'POST',
+      headers: { 'xi-api-key': ELEVEN_KEY, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        text: text,
+        model_id: ELEVEN_MODEL,
+        voice_settings: { stability: 0.5, similarity_boost: 0.75, speed: speed }
+      })
+    });
+
+    if (!res.ok) throw new Error('eleven_error ' + res.status);
+
+    const blob = await res.blob();
+    const url  = URL.createObjectURL(blob);
+    const audio = new Audio(url);
+    currentAudio = audio;
+
+    audio.ontimeupdate = () => {
+      if (audio.duration) {
+        const pct = (audio.currentTime / audio.duration) * 100;
+        const fill = document.getElementById('progressFill');
+        fill.classList.remove('loading');
+        fill.style.width = pct + '%';
+      }
+    };
+
+    audio.onended = () => {
+      isPlaying = false; isPaused = false;
+      setWave(false); stopTimer();
+      URL.revokeObjectURL(url);
+      if (onEnd) onEnd();
+    };
+
+    audio.onerror = () => {
+      isPlaying = false; setWave(false); stopTimer();
+      setStatus('❌ خطأ في تشغيل الصوت', 'error');
+      resetBtns(); if (onEnd) onEnd();
+    };
+
+    await audio.play();
+    return audio;
+
+  } catch(err) {
+    setStatus('❌ خطأ في الاتصال — تحقق من الإنترنت', 'error');
+    isPlaying = false; setWave(false); stopTimer();
+    resetBtns(); if (onEnd) onEnd();
+    return null;
+  }
+}
+
+// ===== PLAYER LOGIC =====
+function playSingle(idx) { isPlayAll = false; startScene(idx, false); }
+function playAll()       { isPlayAll = true;  startScene(0,   true);  }
+
+async function startScene(idx, autoNext) {
+  if (currentAudio) { currentAudio.pause(); currentAudio = null; }
+  currentScene = idx; isPlaying = true; isPaused = false;
+
+  setActiveCard(idx);
+  document.getElementById('npIcon').textContent  = '🎙️';
+  document.getElementById('npTitle').textContent = playerScenes[idx].title || playerScenes[idx].label;
+  document.getElementById('sceneLabel').textContent = playerScenes[idx].label;
+  setStatus('⏳ جاري توليد الصوت...', 'loading');
+  setWave(false);
+  document.getElementById('progressFill').classList.add('loading');
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('mainBtn').textContent  = '⏸';
+  document.getElementById('playAllBtn').disabled  = true;
+  updateNavBtns();
+
+  const audio = await elevenSpeak(playerScenes[idx].text, () => {
+    if (autoNext && currentScene < playerScenes.length - 1) {
+      setTimeout(() => startScene(currentScene + 1, true), 400);
+    } else { finishAll(); }
+  });
+
+  if (audio) { setStatus('▶ جارٍ التشغيل...', 'active'); setWave(true); startTimer(); }
+}
+
+function finishAll() {
+  isPlaying = false; isPlayAll = false;
+  setActiveCard(-1); setWave(false); stopTimer(); resetBtns();
+  document.getElementById('npTitle').textContent = 'اختر مشهداً أو شغّل الكل';
+  setStatus('✅ انتهت المراجعة!', '');
+  document.getElementById('progressFill').style.width = '0%';
+  document.getElementById('progressFill').classList.remove('loading');
+}
+
+function togglePlay() {
+  if (isPaused && currentAudio) {
+    currentAudio.play(); isPaused = false; isPlaying = true;
+    document.getElementById('mainBtn').textContent = '⏸';
+    setWave(true); setStatus('▶ جارٍ التشغيل...', 'active'); startTimer();
+  } else if (isPlaying && currentAudio) {
+    currentAudio.pause(); isPaused = true; isPlaying = false;
+    document.getElementById('mainBtn').textContent = '▶';
+    setWave(false); clearInterval(timerInterval); setStatus('⏸ إيقاف مؤقت', '');
+  } else {
+    startScene(currentScene >= 0 ? currentScene : 0, isPlayAll);
+  }
+}
+
+function prevScene() { if (currentScene > 0) startScene(currentScene - 1, isPlayAll); }
+function nextScene() { if (currentScene < playerScenes.length - 1) startScene(currentScene + 1, isPlayAll); }
+
+function toggleExpand(i) {
+  const card = document.getElementById(`pscene-${i}`);
+  const was = card.classList.contains('active') || card.classList.contains('playing');
+  document.querySelectorAll('.scene-card:not(.playing)').forEach(c => c.classList.remove('active'));
+  if (!was) card.classList.add('active');
+}
+
+// ===== UI HELPERS =====
+function setActiveCard(idx) {
+  document.querySelectorAll('.scene-card').forEach(c => {
+    c.classList.remove('playing');
+    c.querySelector('.scene-play').textContent = '▶';
+  });
+  if (idx >= 0) {
+    const card = document.getElementById(`pscene-${idx}`);
+    if (card) {
+      card.classList.add('playing');
+      card.querySelector('.scene-play').textContent = '⏸';
+      card.scrollIntoView({ behavior:'smooth', block:'nearest' });
+    }
+  }
+}
+
+function setStatus(msg, type) {
+  const el = document.getElementById('npStatus');
+  el.textContent = msg;
+  el.className = 'np-status' + (type ? ' ' + type : '');
+}
+
+function setWave(on) { document.getElementById('waveform').classList.toggle('playing', on); }
+
+function resetBtns() {
+  document.getElementById('mainBtn').textContent = '▶';
+  document.getElementById('playAllBtn').disabled = false;
+  document.getElementById('prevBtn').disabled = true;
+  document.getElementById('nextBtn').disabled = true;
+}
+
+function startTimer() {
+  startTime = Date.now(); clearInterval(timerInterval);
+  timerInterval = setInterval(() => {
+    const s = Math.floor((Date.now()-startTime)/1000);
+    const m = Math.floor(s/60).toString().padStart(2,'0');
+    const sc = (s%60).toString().padStart(2,'0');
+    document.getElementById('pLabel').textContent = `${m}:${sc}`;
+  }, 1000);
+}
+
+function stopTimer() { clearInterval(timerInterval); document.getElementById('pLabel').textContent = '00:00'; }
+
+function updateNavBtns() {
+  document.getElementById('prevBtn').disabled = currentScene <= 0;
+  document.getElementById('nextBtn').disabled = currentScene >= playerScenes.length - 1;
+}
+</script>
+</body>
+</html>
