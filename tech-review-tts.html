@@ -622,11 +622,11 @@
       <div class="input-grid">
         <div class="input-group">
           <label>اسم المنتج</label>
-          <input type="text" id="productName" placeholder="مثال: Samsung Galaxy S25">
+          <input type="text" id="productName" placeholder="مثال: Samsung Galaxy S25" value="Samsung Galaxy A56 5G">
         </div>
         <div class="input-group">
           <label>الإيموجي 🎯</label>
-          <input type="text" id="productEmoji" placeholder="📱" maxlength="2" style="text-align:center;font-size:22px;">
+          <input type="text" id="productEmoji" placeholder="📱" maxlength="2" style="text-align:center;font-size:22px;" value="📱">
         </div>
       </div>
     </div>
@@ -719,14 +719,43 @@ const ELEVEN_KEY   = "sk_7334c2a61839b324d8eed24e06c30ff045293ac9a5defa50";
 const ELEVEN_VOICE = "ihycSANIrpHfhWoaq1g3";
 const ELEVEN_MODEL = "eleven_multilingual_v2";
 
-// ===== DEFAULT SCENES =====
+// ===== DEFAULT SCENES — Samsung Galaxy A56 5G =====
 let scenesData = [
-  { label:'مشهد الافتتاح', title:'ده هو المستقبل', text:'' },
-  { label:'التصميم',        title:'',               text:'' },
-  { label:'الشاشة',         title:'',               text:'' },
-  { label:'الأداء',         title:'',               text:'' },
-  { label:'الكاميرا',       title:'',               text:'' },
-  { label:'الخلاصة',        title:'',               text:'' },
+  {
+    label: 'مشهد الافتتاح',
+    title: 'فيه مفاجآت!',
+    text: 'سامسونج رجعت تاني بأقوى هاتف متوسط في 2025، جلاكسي A56 الجديد. وأنا هقولك بصراحة، الهاتف ده فيه مفاجآت!'
+  },
+  {
+    label: 'التصميم',
+    title: 'إحساس فاخر مش متوقع',
+    text: 'أول ما تمسكه حتشوف إطار معدني وظهر زجاجي، إحساس فاخر جداً مش متوقعه في الفئة المتوسطة. وجاي بألوان جميلة، بينك وأخضر وأسود ورمادي.'
+  },
+  {
+    label: 'الشاشة',
+    title: 'ألوان زاهية وناعمة',
+    text: 'شاشة سوبر أموليد 6.7 بوصة بـ 120 هرتز، الألوان زاهية وناعمة جداً. وتحت الشمس؟ واضحة تماماً.'
+  },
+  {
+    label: 'الأداء',
+    title: 'شغال زي الرصاصة',
+    text: 'جوا معالج إكسينوس 1580 الجديد من سامسونج، أقوى معالج في الفئة المتوسطة لسنة 2025. رامات لحد 12 جيجا، وتخزين 256. شغال زي الرصاصة.'
+  },
+  {
+    label: 'الكاميرا',
+    title: 'واضحة ومش over smoothing',
+    text: 'كاميرا ثلاثية، الرئيسية 50 ميجابكسل بتثبيت بصري وبتصور 4K. والسيلفي 12 ميجابكسل، واضحة ومش بتعمل over smoothing زي ما سامسونج كانت بتعمل قبل كده.'
+  },
+  {
+    label: 'البطارية',
+    title: 'بتعدي اليوم بسهولة',
+    text: 'بطارية 5000 ميلي أمبير بشحن سريع 45 واط، بتعدي اليوم بسهولة. والهاتف مقاوم للميه IP67.'
+  },
+  {
+    label: 'الخلاصة',
+    title: 'خيار صعب تتجاهله',
+    text: 'الخلاصة؟ Galaxy A56 ده هاتف متوسط بتفكير راقي. لو ميزانيتك حوالي 22 ألف جنيه، ده خيار صعب تتجاهله. اكتب في الكومنت، هتشتريه؟'
+  },
 ];
 
 // ===== BUILD EDITOR =====
